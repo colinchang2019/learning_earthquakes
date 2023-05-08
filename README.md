@@ -14,5 +14,5 @@ This repository contains a PyTorch implementation of methods for earthquake pred
 2. result file has the result in csv.
 
 
-##note:
-The file is limited within 25Mb by github. If needed, one can contact the author for result and train and test data.
+## Note:
+The file is limited within 25Mb by github. If needed, one can contact the author for result (model file in pth) and train and test data.
