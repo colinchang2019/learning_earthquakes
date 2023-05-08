@@ -4,9 +4,7 @@
 @ File    : config.py
 @ Time    ：2021/5/7 20:36
 """
-# from model import ConvLstm
-# odelForModify import ConvLstm
-from model_parallel import ConvLstm
+from model import ConvLstm
 from collections import OrderedDict
 import torch
 import numpy as np
@@ -30,9 +28,6 @@ class Config():
 
         self.batch = 1
 
-        self.time_start = "1638_01"  # "1638_01"
-        self.time_end = "2021_04"
-
         self.num_workers = 0  
         self.num_epochs = 40  
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -43,7 +38,7 @@ class Config():
         self.half = False
 
         self.start_mag = 4.0
-        self.start_value = 100.0  # 地震在背景图片中的起始点
+        self.start_value = 100.0 
 
         # prepare for weightedMseMae in Shi et al. (2015)
   
@@ -54,11 +49,9 @@ class Config():
         self.dx = 1
         self.dy = 6 
 
-        self.balancing_weights = [0.000177210579159563, 0.01,
-                                  1.0]
-        self.THRESHOLDS = np.array([4])  # np.array([4, 5, 6, 7, 8])  # int(self.start_mag)
-        self.mse_mae_weights = (1.0, 1.0)
-        self.normal_loss_global_scale = 1 / 1875  # 300000  #
+        self.balancing_weights = [0.000177210579159563, 0.01, 1.0]
+        self.THRESHOLDS = np.array([4]) 
+        self.normal_loss_global_scale = 1 / 1875
 
         self.pre_parameters = (0.0003, 20000, 0.7)  # (0.001, 10000, 0.9)
 
