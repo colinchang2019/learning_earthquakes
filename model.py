@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 """
 @ Author  ：Chesley (chelsey@zju.edu.cn)
-@ File    : modelForModify.py
+@ File    : model.py
 @ Time    ：2021/9/21 11:41
 """
 
@@ -17,14 +17,14 @@ class ConvLSTMCell(nn.Module):
     def __init__(self, input_channels, hidden_channels, kernel_size):
         super(ConvLSTMCell, self).__init__()
 
-        assert hidden_channels % 2 == 0  # assert用于判断条件是否为真，假时触发异常;隐藏层通道必须偶数
+        assert hidden_channels % 2 == 0 
 
         self.input_channels = input_channels
         self.hidden_channels = hidden_channels
         self.kernel_size = kernel_size
         # self.num_features = 4
 
-        self.padding = int((kernel_size - 1) / 2)  # 每一层都padding，保证图形状不改变
+        self.padding = int((kernel_size - 1) / 2)  
 
         self.Wxi = nn.Conv2d(self.input_channels, self.hidden_channels, self.kernel_size, 1, self.padding, bias=True)
         self.Whi = nn.Conv2d(self.hidden_channels, self.hidden_channels, self.kernel_size, 1, self.padding, bias=False)
@@ -36,18 +36,16 @@ class ConvLSTMCell(nn.Module):
         self.Who = nn.Conv2d(self.hidden_channels, self.hidden_channels, self.kernel_size, 1, self.padding, bias=False)
 
         self.Wci = None
-        # 因为这里是Hadamard product，不是卷积，因此单独拉出来；Hadamard product follows commutative product
         self.Wcf = None
         self.Wco = None
 
     def forward(self, x, h, c):
-        # 只是LSTM的一节
+        
         ci = torch.sigmoid(self.Wxi(x) + self.Whi(h) + c * self.Wci)  # i_t, ingate
         cf = torch.sigmoid(self.Wxf(x) + self.Whf(h) + c * self.Wcf)  # f_t forgetgate
         cc = cf * c + ci * torch.tanh(self.Wxc(x) + self.Whc(h))  # cell state
         co = torch.sigmoid(self.Wxo(x) + self.Who(h) + cc * self.Wco)  # output gate
         ch = co * torch.tanh(cc)  # hidden state also known as output vector
-        # x的通道是输入图的通道，但是h、c是隐藏层的通道数
         return ch, cc
 
     def init_hidden(self, batch, hidden, shape):
@@ -65,10 +63,9 @@ class ConvLSTMCell(nn.Module):
 class ConvLstm(nn.Module):
     def __init__(self, input_channels, hidden_channels, Sequences, kernel_size):
         super().__init__()
-        # padding 和 stride参数没用到，但是与conv保持一致，方便下面引用
-        # convlstm模块不改变图片大小H*W
+
         self.input_channels = input_channels
-        self.hidden_channels = hidden_channels  # 隐藏层的通道数
+        self.hidden_channels = hidden_channels 
         self.Sequences = Sequences
         self.kernel_size = kernel_size
         self._all_layers = []
@@ -81,7 +78,7 @@ class ConvLstm(nn.Module):
         :param hidden_state: (hx: (B, S, C, H, W), cx: (B, S, C, H, W))
         :return:
         # Batch, Sequence, Channels, Height, Width
-        # 一个完整的LSTM
+
         '''
         if states is None:
             B, _, C_in, H, W = inputs.shape
@@ -102,10 +99,8 @@ class ConvLstm(nn.Module):
                 B, C_in, H, W = x.shape
                 self.cell.init_hidden(batch=B, hidden=self.hidden_channels, shape=(H, W))
             h, c = self.cell(x, h, c)
-            outputs.append(h)  # 每一张图的计算输出都保留了
-        # torch.stack可以将output从list转化为tensor
-        # permute可以进行维度调换
-        # 每次在使用view()之前，该tensor只要使用了transpose()和permute()这两个函数一定要contiguous(). 为了防止数据地址不连续
+            outputs.append(h)
+
         return torch.stack(outputs).permute(1, 0, 2, 3, 4).contiguous(), (h, c)  # (S, B, C, H, W) -> (B, S, C, H, W)
 
 
@@ -254,8 +249,6 @@ if __name__ == '__main__':
     from config import config
     model = EncoderForecaster(config)
     model = model.cuda()
-    # flops, params = profile(model, inputs=(torch.Tensor(1, 6, 1, 160, 160).cuda(),))
-    # print(flops / 1e9, params / 1e6)
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     input = torch.ones(config.batch, config.sequences_in, 1, config.height, config.width)
