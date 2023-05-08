@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
 """
-@ Author  ：Chesley (chelsey@zju.edu.cn)
+@ Author  ：
 @ File    : rotate.py
 @ Time    ：2021/11/3 0:37
 """
@@ -22,7 +22,7 @@ def rand_rotation_matrix(deflection=1.0, randnums=None):
     """
 
     if randnums is None:
-        randnums = np.random.uniform(size=(3,))  # 默认数据范围在[0. 1)
+        randnums = np.random.uniform(size=(3,))  
 
     theta, phi, z = randnums
 
@@ -41,7 +41,7 @@ def rand_rotation_matrix(deflection=1.0, randnums=None):
         np.sin(phi) * r,
         np.cos(phi) * r,
         np.sqrt(2.0 - z)
-    )  # 计算旋转轴，即旋转轴由phi, z两个参数控制
+    )  
 
     st = np.sin(theta)
     ct = np.cos(theta)
@@ -78,7 +78,7 @@ def get_planar_grid(grid):
     :return (theta, phi): axis in x_y planar
     """
     x, y, z = grid
-    # 检查x,y,z范围
+
     x = np.where(x >= -1.0, x, -1.0)
     x = np.where(x <= 1.0, x, 1.0)
     y = np.where(y >= -1.0, y, -1.0)
@@ -86,18 +86,18 @@ def get_planar_grid(grid):
     z = np.where(z >= -1.0, z, -1.0)
     z = np.where(z <= 1.0, z, 1.0)
 
-    # 转换为角度
+  
     theta = np.arccos(z)
     phi = np.arctan2(y, x)
     phi = np.where(phi>=0, abs(phi), 2*np.pi+phi)
 
-    # 转换为坐标
+
     n = len(x)
     # print(n)
     theta = theta*n/np.pi
     phi = phi*n/(2*np.pi)
 
-    # 处理边界
+
     theta, phi = ((theta+0.5).astype(int), (phi+0.5).astype(int))
     theta = np.where(theta<n, theta, 0)
     phi = np.where(phi<n, phi, 0)
@@ -119,26 +119,3 @@ def rotate_sequence(x, randnums=None):
     return sample
 
 
-if __name__ == "__main__":
-    import matplotlib.pyplot as plt
-    import cv2
-    """
-    with gzip.open("mnist.gz", 'rb') as f:
-        dataset = pickle.load(f)
-    x = dataset["train"]
-    """
-
-    path = "C:/Users/chesley/Pictures/pi4/"
-
-    x = np.zeros((2, 960, 960), dtype=np.float32)
-    x1 = x.reshape((2, config.height, config.width))
-    print(x1.shape)
-    x1 = rotate_sequence(x1, (0.5, 0.5, 0.0))
-    x1 = x1.reshape((2, config.height, config.width))
-    print(x1.shape)
-    """
-    sample[:, :, :] = x[:, theta[:, :], phi[:, :]]
-    # plt.imshow(x[-1])
-    plt.imshow(sample[-1])
-    plt.show()
-    """
