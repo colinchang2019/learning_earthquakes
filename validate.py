@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 """
 @ Author  ：Chesley (chelsey@zju.edu.cn)
-@ File    : precisionAccess.py
+@ File    : validate.py
 @ Time    ：2021/10/12 10:40
 """
 from __future__ import absolute_import
