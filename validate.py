@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
 """
-@ Author  ：Chesley (chelsey@zju.edu.cn)
+@ Author  ：
 @ File    : validate.py
 @ Time    ：2021/10/12 10:40
 """
@@ -116,12 +116,7 @@ def validate(model, config, path, case, los, threholldList, pathout, n_test=1,st
     loss_p = np.mean(loss_p, axis=0)
     loss_r = np.mean(loss_r, axis=0)
     loss_a = np.mean(loss_a, axis=0)
-    #loss_tpr = np.mean(loss_tpr, axis=0)
-    #loss_fpr = np.mean(loss_fpr, axis=0)
 
-    #loss_csi = np.mean(loss_csi, axis=0)
-    #loss_far = np.mean(loss_far, axis=0)
-    #loss_pod = np.mean(loss_pod, axis=0)
     loss_rscore = np.mean(loss_rscore, axis=0)
     loss_mcc = np.mean(loss_mcc, axis=0)
 
@@ -130,7 +125,7 @@ def validate(model, config, path, case, los, threholldList, pathout, n_test=1,st
     df = pd.DataFrame(fullt)
     df.columns = ["precision", "recall", "accuracy", "rscore"]
     df["threshold"] = thresholdList
-    # df["mag"] = logTomag(thresholdList)
+
     df.to_csv(pathout)
     return loss_t / n
 
